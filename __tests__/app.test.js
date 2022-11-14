@@ -56,7 +56,7 @@ describe("/api/reviews", () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
             designer: expect.any(String),
-            comment_count: expect.any(Number), //SQL sends this back as a string
+            comment_count: expect.any(String), //SQL sends this back as a string
           });
         });
         expect(reviews).toBeSortedBy("created_at", { descending: true });
