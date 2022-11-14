@@ -44,7 +44,6 @@ describe("/api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
-        expect(reviews).toEqual(expect.any(Array));
         expect(reviews).toHaveLength(13);
         reviews.forEach((review) => {
           expect(review).toMatchObject({
