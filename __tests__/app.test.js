@@ -49,8 +49,8 @@ describe("/api/reviews", () => {
         reviews.forEach((review) => {
           expect(review).toMatchObject({
             owner: expect.any(String),
-            title: expect.any(Number),
-            review_id: expect.any(Number),
+            title: expect.any(String),
+            review_id: expect.any(String),
             category: expect.any(String),
             review_img_url: expect.any(String),
             created_at: expect.any(String),
