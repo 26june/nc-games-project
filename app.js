@@ -2,8 +2,6 @@ const express = require("express");
 const { getCategories } = require("./controllers/app.controller");
 const app = express();
 
-app.use(express.json());
-
 app.get("/api/categories", getCategories);
 
 //Not found 404
