@@ -50,13 +50,13 @@ describe("/api/reviews", () => {
           expect(review).toMatchObject({
             owner: expect.any(String),
             title: expect.any(String),
-            review_id: expect.any(String),
+            review_id: expect.any(Number),
             category: expect.any(String),
             review_img_url: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
             designer: expect.any(String),
-            comment_count: expect.any(String), //SQL sends this back as a string
+            comment_count: expect.any(Number), //SQL sends this back as a string
           });
         });
         expect(reviews).toBeSortedBy("created_at", { descending: true });
