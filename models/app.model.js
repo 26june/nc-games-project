@@ -19,3 +19,17 @@ exports.selectReviews = () => {
     return rows;
   });
 };
+
+exports.selectReviewsById = (review_id) => {
+  const queryStr = `
+        SELECT * FROM reviews 
+        JOIN users ON users.username = reviews.owner 
+        JOIN categories ON reviews.category = categories.slug 
+        WHERE review_id = $1
+    `;
+
+  return db.query(queryStr, [review_id]).then(({ rows }) => {
+    console.log(rows[0]);
+    return rows[0];
+  });
+};

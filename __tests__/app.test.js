@@ -3,6 +3,7 @@ const request = require("supertest");
 const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/index.js");
+const { get } = require("../app.js");
 
 beforeEach(() => seed(data));
 afterAll(() => db.end());
@@ -59,6 +60,28 @@ describe("/api/reviews", () => {
           });
         });
         expect(reviews).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
+
+describe("/api/reviews/:review_id", () => {
+  test("GET: 200 - SHOULD RESPOND WITH AN OBJECT CONTAINING SEVERAL REVIEW PROPERTIES", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+          review_id: expect.any(Number),
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: expect.any(Number),
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        });
       });
   });
 });
