@@ -6,7 +6,6 @@ exports.selectCategories = () => {
     `;
 
   return db.query(queryStr).then(({ rows }) => {
-    console.log(rows);
     return rows;
   });
 };
