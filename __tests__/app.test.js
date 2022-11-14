@@ -24,10 +24,14 @@ describe("/api/categories", () => {
       .get("/api/categories")
       .expect(200)
       .then(({ body }) => {
-        expect(body.categories).toEqual(expect.any(Array));
-        expect(body.categories[0]).toMatchObject({
-          slug: expect.any(String),
-          description: expect.any(String),
+        const { categories } = body;
+        expect(categories).toEqual(expect.any(Array));
+        expect(categories).toHaveLength(4);
+        categories.forEach((category) => {
+          expect(category).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
         });
       });
   });
