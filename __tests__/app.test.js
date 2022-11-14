@@ -36,3 +36,29 @@ describe("/api/categories", () => {
       });
   });
 });
+
+describe("/api/reviews", () => {
+  test("GET: 200 - SEND AN ARRAY OF OBJECTS WITH SEVERAL PROPERTIES SORTED BY DATE IN DESCENDING ORDER", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toHaveLength(13);
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(String), //SQL sends this back as a string
+          });
+        });
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
