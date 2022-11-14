@@ -9,6 +9,15 @@ afterAll(() => db.end());
 
 describe("/api/categories", () => {
   test("GET: 200 - SEND AN ARRAY OF OBJECTS WHICH HAS A SLUG AND DESCRIPTION PROPERTY", () => {
-    return request(app).get("/api/categories").expect(200);
+    return request(app)
+      .get("/api/categories")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.categories).toEqual(expect.any(Array));
+        expect(body.categories[0]).toMatchObject({
+          slug: expect.any(String),
+          description: expect.any(String),
+        });
+      });
   });
 });
