@@ -49,7 +49,7 @@ describe("/api/reviews", () => {
         reviews.forEach((review) => {
           expect(review).toMatchObject({
             owner: expect.any(String),
-            title: expect.any(String),
+            title: expect.any(Number),
             review_id: expect.any(Number),
             category: expect.any(String),
             review_img_url: expect.any(String),
