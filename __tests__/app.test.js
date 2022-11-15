@@ -84,4 +84,22 @@ describe("/api/reviews/:review_id", () => {
         });
       });
   });
+  test("GET: 404 - SHOULD RESPOND WITH A MESSAGE GIVEN A IF THE REVIEW ID IS NOT FOUND", () => {
+    return request(app)
+      .get("/api/reviews/9999")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 404 - Not Found");
+      });
+  });
+  test("GET: 400 - SHOULD RESPOND WITH A MESSAGE GIVEN AN INVALID ID", () => {
+    return request(app)
+      .get("/api/reviews/stringone")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 400 - Bad Request");
+      });
+  });
 });
