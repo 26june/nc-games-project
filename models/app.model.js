@@ -19,3 +19,18 @@ exports.selectReviews = () => {
     return rows;
   });
 };
+
+exports.selectReviewsById = (review_id) => {
+  const queryStr = `
+        SELECT * FROM reviews 
+        WHERE review_id = $1
+    `;
+
+  return db.query(queryStr, [review_id]).then(({ rows }) => {
+    if (!rows[0]) {
+      return Promise.reject({ status: 404, msg: "Error 404 - Not Found" });
+    } else {
+      return rows[0];
+    }
+  });
+};
