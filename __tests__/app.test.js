@@ -63,6 +63,46 @@ describe("/api/reviews", () => {
   });
 });
 
+describe("/api/reviews/:review_id", () => {
+  test("GET: 200 - SHOULD RESPOND WITH AN OBJECT CONTAINING SEVERAL REVIEW PROPERTIES", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toMatchObject({
+          review_id: 1,
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: expect.any(Number),
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("GET: 404 - SHOULD RESPOND WITH A MESSAGE GIVEN A IF THE REVIEW ID IS NOT FOUND", () => {
+    return request(app)
+      .get("/api/reviews/9999")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 404 - Not Found");
+      });
+  });
+  test("GET: 400 - SHOULD RESPOND WITH A MESSAGE GIVEN AN INVALID ID", () => {
+    return request(app)
+      .get("/api/reviews/stringone")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 400 - Bad Request");
+      });
+  });
+});
+
 describe("/api/reviews/:review_id/comments", () => {
   test("GET 200: SEND AN ARRAY OF OBJECTS WITH COMMENT PROPERTIES ", () => {
     return request(app)
