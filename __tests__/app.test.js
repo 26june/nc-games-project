@@ -63,24 +63,36 @@ describe("/api/reviews", () => {
   });
 });
 
-// describe("/api/reviews/:review_id/comments", () => {
-//   test("GET 200: SEND AN ARRAY OF OBJECTS WITH COMMENT PROPERTIES ", () => {
-//     return request(app)
-//       .get("api/reviews/2/comments")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const { comments } = body;
-//         expect(comments).toHaveLength(3);
-//         comments.forEach((comment) => {
-//           expect(comment).toMatchObject({
-//             comment_id: expect.any(Number),
-//             votes: expect.any(Number),
-//             created_at: expect.any(String),
-//             author: expect.any(String),
-//             body: expect.any(String),
-//             review_id: expect.any(Number),
-//           });
-//         });
-//       });
-//   });
-// });
+describe("/api/reviews/:review_id/comments", () => {
+  test("GET 200: SEND AN ARRAY OF OBJECTS WITH COMMENT PROPERTIES ", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toHaveLength(3);
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            review_id: 2,
+          });
+        });
+      });
+  });
+
+  test("GET 200: RESPONDS WITH AN EMPTY GIVEN AN EXISTING ID WITH NO COMMENTS", () => {
+    return request(app)
+      .get("/api/reviews/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        console.log(comments);
+        expect(comments).toEqual(expect.any(Array));
+        expect(comments).toHaveLength(0);
+      });
+  });
+});
