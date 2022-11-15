@@ -1,6 +1,10 @@
 const express = require("express");
 const categories = require("../db/data/development-data/categories");
-const { selectCategories, selectReviews } = require("../models/app.model");
+const {
+  selectCategories,
+  selectReviews,
+  selectCommentsByReviewId,
+} = require("../models/app.model");
 
 exports.getCategories = (req, res, next) => {
   selectCategories().then((categories) => {
@@ -12,4 +16,8 @@ exports.getReviews = (req, res, next) => {
   selectReviews().then((reviews) => {
     res.status(200).send({ reviews });
   });
+};
+
+exports.getCommentsByReviewId = (req, res, next) => {
+  selectCommentsByReviewId().then();
 };

@@ -1,9 +1,15 @@
 const express = require("express");
-const { getCategories, getReviews } = require("./controllers/app.controller");
+const {
+  getCategories,
+  getReviews,
+  getCommentsByReviewId,
+} = require("./controllers/app.controller");
 const app = express();
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
+
+app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 
 //Not found 404
 app.all("/*", (req, res) => {
