@@ -19,5 +19,8 @@ exports.getReviews = (req, res, next) => {
 };
 
 exports.getCommentsByReviewId = (req, res, next) => {
-  selectCommentsByReviewId().then();
+  const { review_id } = req.params;
+  selectCommentsByReviewId(review_id).then((comments) => {
+    res.status(200).send({ comments });
+  });
 };

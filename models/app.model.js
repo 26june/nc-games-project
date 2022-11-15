@@ -20,4 +20,12 @@ exports.selectReviews = () => {
   });
 };
 
-exports.selectCommentsByReviewId = () => {};
+exports.selectCommentsByReviewId = (review_id) => {
+  const queryStr = `
+      SELECT * from comments WHERE review_id = $1;
+  `;
+
+  return db.query(queryStr, [review_id]).then(({ rows }) => {
+    return rows;
+  });
+};
