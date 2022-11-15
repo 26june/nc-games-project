@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { checkReviewIdExist } = require("../db/seeds/utils");
 
 exports.selectCategories = () => {
   const queryStr = `
@@ -34,3 +35,17 @@ exports.selectReviewsById = (review_id) => {
     }
   });
 };
+
+exports.selectCommentsByReviewId = (review_id) => {
+  const queryStr = `
+      SELECT * from comments WHERE review_id = $1;
+  `;
+  return checkReviewIdExist(review_id)
+    .then(() => {
+      return db.query(queryStr, [review_id]);
+    })
+    .then(({ rows }) => {
+      return rows;
+    });
+};
+

@@ -3,6 +3,7 @@ const categories = require("../db/data/development-data/categories");
 const {
   selectCategories,
   selectReviews,
+  selectCommentsByReviewId,
   selectReviewsById,
 } = require("../models/app.model");
 
@@ -26,3 +27,13 @@ exports.getReviewsByid = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.getCommentsByReviewId = (req, res, next) => {
+  const { review_id } = req.params;
+  selectCommentsByReviewId(review_id)
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
