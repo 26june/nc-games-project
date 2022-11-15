@@ -19,3 +19,5 @@ exports.selectReviews = () => {
     return rows;
   });
 };
+
+exports.selectCommentsByReviewId = () => {};
