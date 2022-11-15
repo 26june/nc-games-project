@@ -48,3 +48,4 @@ exports.selectCommentsByReviewId = (review_id) => {
       return rows;
     });
 };
+

@@ -23,7 +23,7 @@ app.use((err, req, res, next) => {
   }
 });
 
-//Not found 404
+
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
