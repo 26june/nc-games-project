@@ -3,7 +3,6 @@ const request = require("supertest");
 const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/index.js");
-const { get } = require("../app.js");
 
 beforeEach(() => seed(data));
 afterAll(() => db.end());
@@ -72,7 +71,7 @@ describe("/api/reviews/:review_id", () => {
       .then(({ body }) => {
         const { review } = body;
         expect(review).toMatchObject({
-          review_id: expect.any(Number),
+          review_id: 1,
           title: expect.any(String),
           review_body: expect.any(String),
           designer: expect.any(String),
