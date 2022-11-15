@@ -22,9 +22,7 @@ exports.selectReviews = () => {
 
 exports.selectReviewsById = (review_id) => {
   const queryStr = `
-        SELECT *, username AS owner, slug AS category FROM reviews 
-        JOIN users ON users.username = reviews.owner 
-        JOIN categories ON reviews.category = categories.slug 
+        SELECT * FROM reviews 
         WHERE review_id = $1
     `;
 
