@@ -49,3 +49,24 @@ exports.selectCommentsByReviewId = (review_id) => {
     });
 };
 
+exports.insertCommentsByReviewId = (review_id, bodyToPost) => {
+  const { username, body } = bodyToPost;
+  if (
+    !username ||
+    !body ||
+    typeof body !== "string" ||
+    typeof username !== "string"
+  ) {
+    return Promise.reject({ status: 400, msg: "Error 400 - Bad Request" });
+  }
+
+  const queryStr = `INSERT INTO comments (body, votes, author, review_id) VALUES ($1, $2, $3, $4) RETURNING*`;
+
+  return checkReviewIdExist(review_id)
+    .then(() => {
+      return db.query(queryStr, [body, 0, username, review_id]);
+    })
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
