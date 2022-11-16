@@ -398,3 +398,23 @@ describe("/api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("/api/users", () => {
+  test("GET: 200 - SHOULD RESPOND WITH AN ARRAY OF OBJECT WHICH HAS SEVERAL PROPERTIES", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users).toEqual(expect.any(Array));
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+});
