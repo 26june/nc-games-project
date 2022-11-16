@@ -70,3 +70,20 @@ exports.insertCommentsByReviewId = (review_id, bodyToPost) => {
       return rows[0];
     });
 };
+
+exports.updateReviewById = (review_id, inc_votes) => {
+  if (!inc_votes) {
+    return Promise.reject({ status: 400, msg: "Error 400 - Bad Request" });
+  }
+  const queryStr = `
+    UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;
+  `;
+
+  return db.query(queryStr, [inc_votes, review_id]).then(({ rows }) => {
+    if (!rows[0]) {
+      return Promise.reject({ status: 404, msg: "Error 404 - Not Found" });
+    } else {
+      return rows[0];
+    }
+  });
+};
