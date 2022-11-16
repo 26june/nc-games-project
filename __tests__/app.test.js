@@ -267,4 +267,20 @@ describe("/api/reviews/:review_id/comments", () => {
         expect(msg).toBe("Error 400 - Bad Request");
       });
   });
+
+  test("POST 400 - RESPONDS WITH A MESSAGE GIVEN THAT THE REQUEST BODY HAS INVALID KEYS", () => {
+    const bodyToPost = {
+      usernam: "mallionaire",
+      bDY: "its ok",
+    };
+
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(bodyToPost)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 400 - Bad Request");
+      });
+  });
 });
