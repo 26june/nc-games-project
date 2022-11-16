@@ -103,7 +103,6 @@ describe("/api/reviews/:review_id", () => {
   });
 });
 
-
 describe("/api/reviews/:review_id/comments", () => {
   test("GET 200: SEND AN ARRAY OF OBJECTS WITH COMMENT PROPERTIES ", () => {
     return request(app)
@@ -146,7 +145,7 @@ describe("/api/reviews/:review_id/comments", () => {
       });
   });
 
-  test("GET 400: RESPONDS WITH A MESSAGE IF REVIEW IS", () => {
+  test("GET 400: RESPONDS WITH A MESSAGE IF REVIEW IS A STRING", () => {
     return request(app)
       .get("/api/reviews/notanumber/comments")
       .expect(400)
@@ -155,5 +154,117 @@ describe("/api/reviews/:review_id/comments", () => {
         expect(msg).toBe("Error 400 - Bad Request");
       });
   });
-});
 
+  test("POST 201: RESPONDS WITH THE POSTED COMMENT", () => {
+    const bodyToPost = {
+      username: "mallionaire",
+      body: "its ok",
+    };
+
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(bodyToPost)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toMatchObject({
+          review_id: 1,
+          comment_id: expect.any(Number),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+        });
+      });
+  });
+
+  test("POST 400: REQUEST BODY IS MISSING A REQUIRED KEY", () => {
+    const bodyToPost = {
+      body: "its ok",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(bodyToPost)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 400 - Bad Request");
+      });
+  });
+
+  test("POST 404: RESPONDS WITH A MESSAGE IF REVIEW ID DOES NOT EXIST", () => {
+    const bodyToPost = {
+      username: "mallionaire",
+      body: "its ok",
+    };
+
+    return request(app)
+      .post("/api/reviews/9999/comments")
+      .send(bodyToPost)
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 404 - Not Found");
+      });
+  });
+
+  test("POST 400: RESPONDS WITH A MESSAGE IF REVIEW IS STRING", () => {
+    const bodyToPost = {
+      username: "mallionaire",
+      body: "its ok",
+    };
+
+    return request(app)
+      .post("/api/reviews/notanumber/comments")
+      .send(bodyToPost)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 400 - Bad Request");
+      });
+  });
+
+  test("POST 200: EXTRA KEY SHOULD BE IGNORED", () => {
+    const bodyToPost = {
+      username: "mallionaire",
+      body: "its ok",
+      slug: "slug",
+    };
+
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(bodyToPost)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toMatchObject({
+          review_id: 1,
+          comment_id: expect.any(Number),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+        });
+        //not have a key of slug
+        expect(Object.keys(comment)).not.toEqual(
+          expect.arrayContaining(["slug"])
+        );
+      });
+  });
+
+  test("POST 400 - RESPONDS WITH A MESSAGE GIVEN THAT REQUEST BODY IS WRONG DATA TYPE", () => {
+    const bodyToPost = {
+      username: "mallionaire",
+      body: 123,
+    };
+
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(bodyToPost)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 400 - Bad Request");
+      });
+  });
+});
