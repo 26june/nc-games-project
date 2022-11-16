@@ -101,6 +101,120 @@ describe("/api/reviews/:review_id", () => {
         expect(msg).toBe("Error 400 - Bad Request");
       });
   });
+
+  test("PATCH: 201 - SHOULD RESPOND WITH THE UPDATED REVIEW (ADD)", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: 1 })
+      .expect(201)
+      .then(({ body }) => {
+        const { review } = body;
+
+        expect(review).toMatchObject({
+          review_id: 2,
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: 6,
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        });
+      });
+  });
+
+  test("PATCH: 201 - SHOULD RESPOND WITH THE UPDATED REVIEW (SUBTRACT)", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: -100 })
+      .expect(201)
+      .then(({ body }) => {
+        const { review } = body;
+
+        expect(review).toMatchObject({
+          review_id: 2,
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: -95,
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        });
+      });
+  });
+
+  test("PATCH: 400 - SHOULD RESPOND WITH MESSAGE GIVEN A STRING", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: "one" })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 400 - Bad Request");
+      });
+  });
+
+  test("PATCH: 404 - RESPONDS WITH A MESSAGE GIVEN A NON EXISTING ID ", () => {
+    return request(app)
+      .patch("/api/reviews/999")
+      .send({ inc_votes: 1 })
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 404 - Not Found");
+      });
+  });
+
+  test("PATCH: 400 - SHOULD RESPOND WITH A MESSAGE GIVEN AN INVALID ID ", () => {
+    return request(app)
+      .patch("/api/reviews/stringnine")
+      .send({ inc_votes: 1 })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 400 - Bad Request");
+      });
+  });
+
+  test("PATCH: 200 - SHOULD IGNORE EXTRA PROPERTIES GIVEN IN THE REQUEST BODY", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inc_votes: 5, extraKey: 7 })
+      .expect(201)
+      .then(({ body }) => {
+        const { review } = body;
+
+        expect(review).toMatchObject({
+          review_id: 2,
+          title: expect.any(String),
+          review_body: expect.any(String),
+          designer: expect.any(String),
+          review_img_url: expect.any(String),
+          votes: 10,
+          category: expect.any(String),
+          owner: expect.any(String),
+          created_at: expect.any(String),
+        });
+
+        expect(Object.keys(review)).not.toEqual(
+          expect.arrayContaining(["extraKey"])
+        );
+      });
+  });
+
+  test("PATCH: 400 - RESPONDS WITH A MESSAGE GIVEN AN INVALID KEY IN THE REQUEST BODY", () => {
+    return request(app)
+      .patch("/api/reviews/2")
+      .send({ inv_cotes: 1 })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 400 - Bad Request");
+      });
+  });
 });
 
 describe("/api/reviews/:review_id/comments", () => {
