@@ -608,3 +608,29 @@ describe("/api/users", () => {
       });
   });
 });
+
+describe("/api/comments/:comment_id", () => {
+  test("DELETE: 204 - RESPONDS WITH NO CONTENT", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+
+  test("DELETE: 404 - RESPONDS WITH A MESSAGE IF ID DOES NOT EXIST ", () => {
+    return request(app)
+      .delete("/api/comments/9999")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 404 - Not Found");
+      });
+  });
+
+  test("DELETE: 400 - RESPONDS WITH A MESSAGE IF ID DOES NOT EXIST ", () => {
+    return request(app)
+      .delete("/api/comments/iwashere")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 400 - Bad Request");
+      });
+  });
+});
