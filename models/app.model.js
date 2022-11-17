@@ -87,3 +87,13 @@ exports.updateReviewById = (review_id, inc_votes) => {
     }
   });
 };
+
+exports.selectUsers = () => {
+  const queryStr = `
+    SELECT * FROM users;
+  `;
+
+  return db.query(queryStr).then(({ rows }) => {
+    return rows;
+  });
+};
