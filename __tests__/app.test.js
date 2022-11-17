@@ -112,6 +112,17 @@ describe("/api/reviews", () => {
       });
   });
 
+  test("GET: 200 - RESPONDS WITH AN EMPTY IF THE SPECIFIED CATEGORY VALUE IS EMPTY ", () => {
+    return request(app)
+      .get("/api/reviews?category=children's games")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toEqual(expect.any(Array));
+        expect(reviews).toHaveLength(0);
+      });
+  });
+
   test("GET: 400 - WRONG QUERY SPELLING", () => {
     return request(app)
       .get("/api/reviews?caterogy")
