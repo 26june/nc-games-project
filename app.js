@@ -57,13 +57,3 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
-
-/*
-JSON FORMAT for endpoints.json
-
-  "DELETE api/comments/:comment_id": {
-    "description": "",
-    "queries": [],
-    "exampleResponse": {}
-  }
-*/
