@@ -11,12 +11,63 @@ exports.selectCategories = () => {
   });
 };
 
-exports.selectReviews = () => {
-  const queryStr = `
-        SELECT reviews.* , COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id GROUP BY reviews.review_id ORDER BY created_at DESC;
+exports.selectReviews = (reqQueries) => {
+  const validQueries = ["", "category", "sort_by", "order"];
+
+  if (
+    !validQueries.includes(Object.keys(reqQueries)[0]) &&
+    Object.keys(reqQueries)[0] !== undefined //undefined = no query
+  ) {
+    return Promise.reject({ status: 400, msg: "Error 400 - Bad Request" });
+  }
+
+  let { category, sort_by = "created_at", order = "DESC" } = reqQueries;
+
+  //handles "/api/reviews?sort_by"
+  if (sort_by === "") {
+    sort_by = "created_at";
+  }
+
+  //handles "/api/reviews?order"
+  if (order === "") {
+    order = "DESC";
+  }
+
+  const validSortColumns = [
+    "review_id",
+    "title",
+    "category",
+    "designer",
+    "owner",
+    "review_body",
+    "review_img_url",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+
+  if (!validSortColumns.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "Error 400 - Bad Request" });
+  }
+
+  if (order.toUpperCase() !== "ASC" && order.toUpperCase() !== "DESC") {
+    return Promise.reject({ status: 400, msg: "Error 400 - Bad Request" });
+  }
+
+  let queryStr = `
+        SELECT reviews.* , COUNT(comment_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id 
     `;
 
-  return db.query(queryStr).then(({ rows }) => {
+  const queryValues = [];
+
+  if (category) {
+    queryStr += ` WHERE category = $1`;
+    queryValues.push(category);
+  }
+
+  queryStr += ` GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`;
+
+  return db.query(queryStr, queryValues).then(({ rows }) => {
     return rows;
   });
 };

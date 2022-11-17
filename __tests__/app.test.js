@@ -61,6 +61,194 @@ describe("/api/reviews", () => {
         expect(reviews).toBeSortedBy("created_at", { descending: true });
       });
   });
+
+  describe("/api/reviews (queries)", () => {
+    //Category
+    test("GET: 200 - RESPONDS WITH THE REVIEW ARRAY IF THE CATEGORY QUERY IS OMITTED", () => {
+      return request(app)
+        .get("/api/reviews?category")
+        .expect(200)
+        .then(({ body }) => {
+          const { reviews } = body;
+          expect(reviews).toHaveLength(13);
+          reviews.forEach((review) => {
+            expect(review).toMatchObject({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: expect.any(String),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(String), //SQL sends this back as a string
+            });
+          });
+          expect(reviews).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+  });
+
+  test("GET: 200 - RESPONDS WITH THE REVIEW ARRAY WITH THE SPECIFIED CATEGORY VALUE", () => {
+    return request(app)
+      .get("/api/reviews?category=euro game")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toHaveLength(1);
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: "euro game",
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(String), //SQL sends this back as a string
+          });
+        });
+      });
+  });
+
+  test("GET: 200 - RESPONDS WITH AN EMPTY IF THE SPECIFIED CATEGORY VALUE IS EMPTY ", () => {
+    return request(app)
+      .get("/api/reviews?category=children's games")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toEqual(expect.any(Array));
+        expect(reviews).toHaveLength(0);
+      });
+  });
+
+  test("GET: 400 - WRONG QUERY SPELLING", () => {
+    return request(app)
+      .get("/api/reviews?caterogy")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 400 - Bad Request");
+      });
+  });
+
+  //sort_by
+  test("GET: 200 - RESPONDS WITH THE REVIEW ARRAY THAT DEFAULTS TO SORTED BY DATE", () => {
+    return request(app)
+      .get("/api/reviews?sort_by")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toHaveLength(13);
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(String), //SQL sends this back as a string
+          });
+        });
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+
+  test("GET: 200 - REVIEW ARRAY SORTED BY THE SPECIFIED QUERTY (ORDER DEFAULT = DESC)", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=owner")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toHaveLength(13);
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(String), //SQL sends this back as a string
+          });
+        });
+        expect(reviews).toBeSortedBy("owner", { descending: true });
+      });
+  });
+
+  test("GET: 400 - INVALID SORT BY COLUMN", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=gj")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 400 - Bad Request");
+      });
+  });
+
+  //order
+  test("GET: 200 - REVIEW ORDER DEFAULTS DESCENDING ", () => {
+    return request(app)
+      .get("/api/reviews?order")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toHaveLength(13);
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(String), //SQL sends this back as a string
+          });
+        });
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+
+  test("GET: 200 - REVIEW ORDER IS ASCENDING ", () => {
+    return request(app)
+      .get("/api/reviews?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toHaveLength(13);
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(String), //SQL sends this back as a string
+          });
+        });
+        expect(reviews).toBeSortedBy("created_at", { descending: false });
+      });
+  });
+
+  test("GET - 400: INVALID ORDER RESPONDS WITH MESSAGE", () => {
+    return request(app)
+      .get("/api/reviews?order=gj")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Error 400 - Bad Request");
+      });
+  });
 });
 
 describe("/api/reviews/:review_id", () => {
