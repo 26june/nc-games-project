@@ -7,6 +7,7 @@ const {
   postCommentsByReviewId,
   patchByReviewId,
   getUsers,
+  deleteCommentById,
 } = require("./controllers/app.controller");
 const app = express();
 app.use(express.json());
@@ -20,6 +21,8 @@ app.post("/api/reviews/:review_id/comments", postCommentsByReviewId);
 app.patch("/api/reviews/:review_id", patchByReviewId);
 
 app.get("/api/users", getUsers);
+
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 //Custom error
 app.use((err, req, res, next) => {
