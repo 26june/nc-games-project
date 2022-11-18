@@ -7,6 +7,7 @@ const commentsRouter = require("./comments-router");
 
 apiRouter.get("/", getApi);
 
+//Sub routes
 apiRouter.use("/categories", categoriesRouter);
 apiRouter.use("/users", userRouter);
 apiRouter.use("/reviews", reviewsRouters);
