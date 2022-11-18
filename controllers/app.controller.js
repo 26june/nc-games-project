@@ -1,5 +1,4 @@
 const express = require("express");
-const categories = require("../db/data/development-data/categories");
 const {
   selectCategories,
   selectReviews,
