@@ -610,6 +610,32 @@ describe("/api/users", () => {
   });
 });
 
+describe('"/api/users/:username"', () => {
+  test("GET: 200 - SHOULD RESPOND WITH AN OBJECT WITH A SPECIFIC USERNAME PROPERTY", () => {
+    return request(app)
+      .get("/api/users/mallionaire")
+      .expect(200)
+      .then(({ body }) => {
+        const { user } = body;
+        expect(user).toMatchObject({
+          username: "mallionaire",
+          name: expect.any(String),
+          avatar_url: expect.any(String),
+        });
+      });
+  });
+
+  test("GET: 404 - RESPONDS WITH A MESSAGE IF USERNAME DOES NOT EXIST", () => {
+    return request(app)
+      .get("/api/users/123213")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Error 404 - Not Found");
+      });
+  });
+});
+
 describe("/api/comments/:comment_id", () => {
   test("DELETE: 204 - RESPONDS WITH NO CONTENT", () => {
     return request(app).delete("/api/comments/1").expect(204);
