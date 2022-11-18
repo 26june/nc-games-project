@@ -150,6 +150,20 @@ exports.selectUsers = () => {
   });
 };
 
+exports.selectUsersByUsernames = (username) => {
+  const queryStr = `
+    SELECT * FROM users WHERE username = $1;
+  `;
+
+  return db.query(queryStr, [username]).then(({ rows }) => {
+    if (!rows[0]) {
+      return Promise.reject({ status: 404, msg: "Error 404 - Not Found" });
+    } else {
+      return rows[0];
+    }
+  });
+};
+
 exports.removeCommentsById = (comment_id) => {
   const queryStr = `
     DELETE FROM comments WHERE comment_id = $1 RETURNING*;

@@ -7,6 +7,7 @@ const {
   updateReviewById,
   selectUsers,
   removeCommentsById,
+  selectUsersByUsernames,
 } = require("../models/app.model");
 
 const endpoints = require("../endpoints.json");
@@ -66,6 +67,15 @@ exports.getUsers = (req, res, next) => {
   selectUsers().then((users) => {
     res.status(200).send({ users });
   });
+};
+
+exports.getUsersByUsernames = (req, res, next) => {
+  const { username } = req.params;
+  selectUsersByUsernames(username)
+    .then((user) => {
+      res.status(200).send({ user });
+    })
+    .catch(next);
 };
 
 exports.deleteCommentById = (req, res, next) => {
