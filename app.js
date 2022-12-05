@@ -5,8 +5,13 @@ const {
   handlePsqlErrors,
 } = require("./errors");
 
+const cors = require("cors");
+
 const apiRouter = require("./routes/api-router");
 const app = express();
+
+app.use(cors());
+
 app.use(express.json());
 
 app.get("/api/health", (req, res) => {
